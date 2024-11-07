@@ -131,7 +131,7 @@ bool load_libjulia_symbols() {
     LOAD_JULIA_SYMBOL(jl_stderr_stream);
     LOAD_JULIA_SYMBOL(jl_printf);
     // LOAD_JULIA_SYMBOL(jl_flush_cstdio);
-    LOAD_JULIA_SYMBOL(jl_stdout_obj);
+    // LOAD_JULIA_SYMBOL(jl_stdout_obj);
     LOAD_JULIA_SYMBOL(jl_stderr_obj);
 
     return true;

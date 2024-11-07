@@ -41,7 +41,7 @@ julia_url <- function(version){
     } else if (sysname == "Darwin") {
         os <- "mac"
         slug <- ifelse(sysmachine == "arm64", "macaarch64", "mac64")
-        ext <- "dmg"
+        ext <- "tar.gz"
     } else if (sysname == "Windows") {
         os <- "winnt"
         slug <- "win64"
@@ -113,7 +113,8 @@ install_julia <- function(version = "latest",
       utils::untar(file, exdir=dest)
       subfolder <- paste("julia-", version, sep="")
     } else if (sysname == "Darwin") {
-      subfolder <- install_julia_dmg(file, dest)
+      utils::untar(file, exdir=dest)
+      subfolder <- paste("julia-", version, sep="")
     } else if (sysname == "Windows") {
       utils::unzip(file, exdir = dest)
       subfolder <- paste("julia-", version, sep="")
@@ -125,43 +126,4 @@ install_julia <- function(version = "latest",
     print(sprintf("Installed Julia to %s", dest))
 
     invisible(TRUE)
-}
-
-
-# Install Julia from DMG on macOS
-install_julia_dmg <- function(dmg_path, install_dir) {
-    mount_root <- normalizePath(".")
-    mount_name <- tools::file_path_sans_ext(basename(dmg_path))
-    mount_point <- file.path(mount_root, mount_name)
-
-    umount(mount_point)
-
-    cmd <- paste(
-        'hdiutil attach "', dmg_path, '" -mountpoint "', mount_point,
-        '" -mount required -quiet',
-    sep = "")
-
-    tryCatch({
-        exitcode <- system(cmd)
-        stopifnot(exitcode == 0)
-
-        appname <- list.files(mount_point, pattern = "julia*", ignore.case = T)
-        src_path <- file.path(mount_point, appname)
-        if (!dir.exists(install_dir)) {
-            dir.create(install_dir, recursive = T)
-        }
-        file.copy(src_path, install_dir, recursive = T)
-    },
-    finally = {
-        umount(mount_point)
-    })
-
-    file.path(appname, "Contents", "Resources", "julia")
-}
-umount <- function(mount_point) {
-    if (dir.exists(mount_point)) {
-        system(paste('umount "', mount_point, '"', sep = ""))
-    } else {
-        0
-    }
 }

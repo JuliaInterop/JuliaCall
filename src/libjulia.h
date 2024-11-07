@@ -120,7 +120,7 @@ JL_EXTERN int (*jl_printf)(uv_stream_t *s, const char *format, ...)
 
 // showing and std streams
 // L_EXTERN void (*jl_flush_cstdio)(void);
-JL_EXTERN jl_value_t* (*jl_stdout_obj)(void);
+// JL_EXTERN jl_value_t* (*jl_stdout_obj)(void);
 JL_EXTERN jl_value_t* (*jl_stderr_obj)(void);
 
 
