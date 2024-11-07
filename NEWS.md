@@ -1,3 +1,7 @@
+# JuliaCall 0.17.5.9000
+
+* Fix breakage with **knitr** 1.44 when using Plots in a `julia` chunk ([#209](https://github.com/Non-Contradiction/JuliaCall/issues/209)).
+
 # JuliaCall 0.17.5
 
 * Nineteenth release on CRAN.

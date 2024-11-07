@@ -55,7 +55,12 @@ begin_plot <- function(){
 
 ## This function is used by Julia plot_display function
 finish_plot <- function(){
+    ## FIXME: opts_current is supposed to be read-only
+    ## so it require unlock to be modified since knitr 1.44
+    ## https://yihui.org/en/2023/09/knitr-1-44/
+    knitr::opts_current$lock(FALSE)
     knitr::opts_current$set(Jfig.cur = .julia$pending_plot_number + 1L)
+    knitr::opts_current$lock(TRUE)
     julia$current_plot <- .julia$pending_plot
 }
 
