@@ -18,3 +18,4 @@
 ^paper$
 ^LICENSE\.md$
 ^\.zenodo\.json$
+^CRAN-SUBMISSION$
