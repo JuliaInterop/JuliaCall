@@ -4,7 +4,7 @@
 # JuliaCall for Seamless Integration of R and Julia
 
 [![R build
-status](https://github.com/Non-Contradiction/JuliaCall/workflows/R-CMD-check/badge.svg)](https://github.com/Non-Contradiction/JuliaCall/actions)
+status](https://github.com/JuliaInterop/JuliaCall/workflows/R-CMD-check/badge.svg)](https://github.com/JuliaInterop/JuliaCall/actions)
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/JuliaCall)](https://cran.r-project.org/package=JuliaCall)
 [![](https://cranlogs.r-pkg.org/badges/JuliaCall)](https://cran.r-project.org/package=JuliaCall)
 [![](https://cranlogs.r-pkg.org/badges/grand-total/JuliaCall)](https://cran.r-project.org/package=JuliaCall)
@@ -31,10 +31,10 @@ high-performance dynamic programming language for numerical computing,
 see <https://julialang.org/> for more information. Below is an image for
 [Mandelbrot set](https://en.wikipedia.org/wiki/Mandelbrot_set).
 JuliaCall brings **more than 100 times speedup** of the calculation! See
-<https://github.com/Non-Contradiction/JuliaCall/tree/master/example/mandelbrot>
+<https://github.com/JuliaInterop/JuliaCall/tree/master/example/mandelbrot>
 for more information.
 
-![](https://non-contradiction.github.io/JuliaCall/articles/mandelbrot.png)
+![](https://JuliaInterop.github.io/JuliaCall/articles/mandelbrot.png)
 
 ## Installation
 
@@ -64,14 +64,13 @@ which will invoke `install_julia` automatically if Julia is not found
 and also do initialization of `JuliaCall`.
 
 You can also setup Julia manually by downloading a generic binary from
-<https://julialang.org/downloads/> and add it to your path. Currently
-`Julia v0.6.x` and the `Julia v1.x` releases are all supported by
-`JuliaCall`.
+<https://julialang.org/downloads/> and add it to your path. `Julia v1.6` and
+higher releases are supported by `JuliaCall`.
 
 You can get the development version of `JuliaCall` by
 
 ``` r
-devtools::install_github("Non-Contradiction/JuliaCall")
+devtools::install_github("JuliaInterop/JuliaCall")
 ```
 
 ## Basic Usage
@@ -238,7 +237,7 @@ julia_help("sqrt")
 
 -   The GitHub Pages for this repository host the documentation for the
     development version of `JuliaCall`:
-    <https://non-contradiction.github.io/JuliaCall/>.
+    <https://JuliaInterop.github.io/JuliaCall/>.
 
 -   Also, you are more than welcome to contact me about `JuliaCall` at
     <lch34677@gmail.com> or <cxl508@psu.edu>.
@@ -258,14 +257,14 @@ examples:
     differential equations (ODEs), stochastic differential equations
     (SDEs), delay differential equations (DDEs), and
     differential-algebraic equations (DAEs) directly in `R`.
--   [`convexjlr`](https://github.com/Non-Contradiction/convexjlr) is an
+-   [`convexjlr`](https://github.com/JuliaInterop/convexjlr) is an
     `R` package for Disciplined Convex Programming (DCP) by providing a
     high level wrapper for `Julia` package
     [`Convex.jl`](https://github.com/jump-dev/Convex.jl). `convexjlr`
     can solve linear programs, second order cone programs, semidefinite
     programs, exponential cone programs, mixed-integer linear programs,
     and some other DCP-compliant convex programs through `Convex.jl`.
--   [`ipoptjlr`](https://github.com/Non-Contradiction/ipoptjlr) provides
+-   [`ipoptjlr`](https://github.com/JuliaInterop/ipoptjlr) provides
     an `R` interface to the `Ipopt` nonlinear optimization solver. It
     provides a simple high-level wrapper for `Julia` package
     \[`Ipopt.jl`\] (<https://github.com/jump-dev/Ipopt.jl>).
@@ -277,7 +276,7 @@ examples:
     illustrates how to use `JuliaCall` and `Julia` package
     [`MixedModels.jl`](https://github.com/JuliaStats/MixedModels.jl) to
     build mixed models in `R`.
--   [`autodiffr`](https://github.com/Non-Contradiction/autodiffr)
+-   [`autodiffr`](https://github.com/JuliaInterop/autodiffr)
     provides automatic differentiation to native `R` functions by
     wrapping `Julia` packages
     [`ForwardDiff.jl`](https://github.com/JuliaDiff/ForwardDiff.jl) and
@@ -286,21 +285,21 @@ examples:
 
 If you have any issues in developing an `R` package using `JuliaCall`,
 you may report it using the link:
-<https://github.com/Non-Contradiction/JuliaCall/issues/new>, or email me
+<https://github.com/JuliaInterop/JuliaCall/issues/new>, or email me
 at <lch34677@gmail.com> or <cxl508@psu.edu>.
 
 ## Suggestion, Issue Reporting, and Contributing
 
 `JuliaCall` is under active development now. Any suggestion or issue
 reporting is welcome! You may report it using the link:
-<https://github.com/Non-Contradiction/JuliaCall/issues/new>, or email me
+<https://github.com/JuliaInterop/JuliaCall/issues/new>, or email me
 at <lch34677@gmail.com> or <cxl508@psu.edu>. You are welcome to use the
 [issue
-template](https://github.com/Non-Contradiction/JuliaCall/blob/master/.github/ISSUE_TEMPLATE/bug_report.md)
+template](https://github.com/JuliaInterop/JuliaCall/blob/master/.github/ISSUE_TEMPLATE/bug_report.md)
 and the [pull request
-template](https://github.com/Non-Contradiction/JuliaCall/blob/master/.github/pull_request_template.md).
+template](https://github.com/JuliaInterop/JuliaCall/blob/master/.github/pull_request_template.md).
 The [contributing
-guide](https://github.com/Non-Contradiction/JuliaCall/blob/master/.github/CONTRIBUTING.md)
+guide](https://github.com/JuliaInterop/JuliaCall/blob/master/.github/CONTRIBUTING.md)
 provides some guidance for making contributions.
 
 ### Checking `JuliaCall` Package
@@ -340,7 +339,7 @@ package. You can
 
 Please note that the `JuliaCall` project is released with a [Contributor
 Code of
-Conduct](https://github.com/Non-Contradiction/JuliaCall/blob/master/CODE_OF_CONDUCT.md).
+Conduct](https://github.com/JuliaInterop/JuliaCall/blob/master/CODE_OF_CONDUCT.md).
 By contributing to this project, you agree to abide by its terms.
 
 ## Citing
