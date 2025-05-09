@@ -17,7 +17,7 @@ julia_latest_version <- function(){
     utils::download.file(url, file)
     versions <- rjson::fromJSON(file=file)
 
-    max(names(Filter(function(v) v$stable, versions)))
+    max(numeric_version(names(Filter(function(v) v$stable, versions))))
 }
 
 
@@ -30,7 +30,7 @@ julia_url <- function(version){
     } else {
         "x86"
     }
-    short_version <- substr(version, 1, 3)
+    short_version <- version[,1:2]
     sysname <- Sys.info()["sysname"]
     if (sysname == "Linux") {
         os <- "linux"
