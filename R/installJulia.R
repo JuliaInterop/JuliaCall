@@ -88,6 +88,11 @@ install_julia <- function(version = "latest",
 
     if (version == "latest") {
         version <- julia_latest_version()
+    } else {
+        # Convert string version to numeric_version object if needed
+        if (is.character(version)) {
+            version <- numeric_version(version)
+        }
     }
     url <- julia_url(version)
 
