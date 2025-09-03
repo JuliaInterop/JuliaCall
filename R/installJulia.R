@@ -20,6 +20,27 @@ julia_latest_version <- function(){
     max(numeric_version(names(Filter(function(v) v$stable, versions))))
 }
 
+julia_lts_version <- function(){
+    url <- "https://julialang-s3.julialang.org/bin/versions.json"
+    file <- tempfile()
+    utils::download.file(url, file)
+    versions <- rjson::fromJSON(file=file)
+    
+    # Julia 1.10.x is the current LTS series - find the latest 1.10.x version
+    stable_versions <- Filter(function(v) v$stable, versions)
+    version_numbers <- numeric_version(names(stable_versions))
+    
+    # Get all 1.10.x versions
+    lts_candidates <- version_numbers[version_numbers >= "1.10.0" & version_numbers < "1.11.0"]
+    
+    if (length(lts_candidates) > 0) {
+        return(max(lts_candidates))
+    }
+    
+    # Fallback: return latest stable if no 1.10.x found
+    max(version_numbers)
+}
+
 
 julia_url <- function(version){
     sysmachine <- Sys.info()["machine"]
@@ -72,15 +93,16 @@ julia_save_install_dir <- function(dir){
 
 #' Install Julia.
 #'
-#' @param version The version of Julia to install (e.g. \code{"1.6.3"}).
-#'                Defaults to \code{"latest"}, which will install the most
-#'                recent stable release.
+#' @param version The version of Julia to install. Can be a specific version 
+#'                (e.g. \code{"1.10.5"}), \code{"lts"} for the Long-Term Support 
+#'                version, or \code{"latest"} for the most recent stable release.
+#'                Defaults to \code{"lts"} for better stability and compatibility.
 #' @param prefix the directory where Julia will be installed.
 #'     If not set, a default location will be determined by \code{rappdirs}
 #'     if it is installed, otherwise an error will be raised.
 #'
 #' @export
-install_julia <- function(version = "latest",
+install_julia <- function(version = "lts",
                           prefix = julia_default_install_dir()){
     if (is.null(prefix)) {
         stop("rappdirs is not installed and prefix was not provided")
@@ -88,6 +110,8 @@ install_julia <- function(version = "latest",
 
     if (version == "latest") {
         version <- julia_latest_version()
+    } else if (version == "lts") {
+        version <- julia_lts_version()
     } else {
         # Convert string version to numeric_version object if needed
         if (is.character(version)) {
