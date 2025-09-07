@@ -24,8 +24,9 @@
 #'     If a new version of R is used, then this parameter needs to be set to TRUE.
 #' @param sysimage_path path to the precompiled custom sys image.
 #'     Path can be either an absolute path or relative to the current directory.
-#' @param version the version of Julia to install. Defaults to "latest", which is the latest
-#'     released version of Julia. You can use "1.10" for example for Julia v1.10.
+#' @param version the version of Julia to install. Defaults to "lts", which is the current
+#'     Long Term Support version of Julia. You can also use "latest" for the most recent 
+#'     stable release, or specify a version like "1.10".
 #' @return The julia interface, which is an environment with the necessary methods
 #'   like command, source and things like that to communicate with julia.
 #'
@@ -40,7 +41,7 @@ julia_setup <- function(JULIA_HOME = NULL, verbose = TRUE,
                         installJulia = FALSE,
                         install = TRUE, force = FALSE, useRCall = TRUE,
                         rebuild = FALSE, sysimage_path = NULL,
-                        version = "latest") {
+                        version = "lts") {
     ## libR <- paste0(R.home(), '/lib')
     ## system(paste0('export LD_LIBRARY_PATH=', libR, ':$LD_LIBRARY_PATH'))
 

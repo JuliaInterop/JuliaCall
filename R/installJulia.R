@@ -11,6 +11,10 @@ julia_default_install_dir <- function(){
     return(dir)
 }
 
+#' Get the latest stable Julia version.
+#'
+#' @return A numeric_version object representing the latest stable Julia version.
+#' @export
 julia_latest_version <- function(){
     url <- "https://julialang-s3.julialang.org/bin/versions.json"
     file <- tempfile()
@@ -18,6 +22,26 @@ julia_latest_version <- function(){
     versions <- rjson::fromJSON(file=file)
 
     max(numeric_version(names(Filter(function(v) v$stable, versions))))
+}
+
+#' Get the latest Long Term Support (LTS) Julia version.
+#'
+#' @return A numeric_version object representing the latest LTS Julia version.
+#' @export
+julia_lts_version <- function(){
+    url <- "https://julialang-s3.julialang.org/bin/versions.json"
+    file <- tempfile()
+    utils::download.file(url, file)
+    versions <- rjson::fromJSON(file=file)
+
+    # Find the latest LTS version (currently 1.10.x series)
+    lts_versions <- names(Filter(function(v) v$stable && isTRUE(v$lts), versions))
+    if (length(lts_versions) > 0) {
+        max(numeric_version(lts_versions))
+    } else {
+        # Fallback to latest stable if no LTS is marked
+        julia_latest_version()
+    }
 }
 
 
@@ -73,14 +97,15 @@ julia_save_install_dir <- function(dir){
 #' Install Julia.
 #'
 #' @param version The version of Julia to install (e.g. \code{"1.6.3"}).
-#'                Defaults to \code{"latest"}, which will install the most
-#'                recent stable release.
+#'                Defaults to \code{"lts"}, which will install the current
+#'                Long Term Support release. Can also be \code{"latest"} for
+#'                the most recent stable release.
 #' @param prefix the directory where Julia will be installed.
 #'     If not set, a default location will be determined by \code{rappdirs}
 #'     if it is installed, otherwise an error will be raised.
 #'
 #' @export
-install_julia <- function(version = "latest",
+install_julia <- function(version = "lts",
                           prefix = julia_default_install_dir()){
     if (is.null(prefix)) {
         stop("rappdirs is not installed and prefix was not provided")
@@ -88,6 +113,8 @@ install_julia <- function(version = "latest",
 
     if (version == "latest") {
         version <- julia_latest_version()
+    } else if (version == "lts") {
+        version <- julia_lts_version()
     }
     url <- julia_url(version)
 

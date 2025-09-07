@@ -4,12 +4,13 @@
 \alias{install_julia}
 \title{Install Julia.}
 \usage{
-install_julia(version = "latest", prefix = julia_default_install_dir())
+install_julia(version = "lts", prefix = julia_default_install_dir())
 }
 \arguments{
 \item{version}{The version of Julia to install (e.g. \code{"1.6.3"}).
-Defaults to \code{"latest"}, which will install the most
-recent stable release.}
+Defaults to \code{"lts"}, which will install the current
+Long Term Support release. Can also be \code{"latest"} for
+the most recent stable release.}
 
 \item{prefix}{the directory where Julia will be installed.
 If not set, a default location will be determined by \code{rappdirs}
