@@ -66,6 +66,11 @@ jobs:
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
 
+      - name: Install JuliaCall dependencies
+        run: |
+          julia -e 'using Pkg; Pkg.add("Suppressor"); Pkg.add("RCall")'
+        shell: bash
+
       - name: Check
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
