@@ -1,7 +1,7 @@
 get_os <- function(){
     sysinf <- Sys.info()
     if (!is.null(sysinf)) {
-        os <- sysinf['sysname']
+        os <- sysinf[['sysname']]
         if (os == 'Darwin')
             os <- "osx"
     } else {## mystery machine

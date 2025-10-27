@@ -129,6 +129,23 @@ julia_setup <- function(JULIA_HOME = NULL, verbose = TRUE,
         on.exit(setwd(cur_dir))
     }
 
+    # workaround for Ubuntu libunwind issue (see https://github.com/JuliaInterop/JuliaCall/issues/238)
+    # Preload Julia's own libunwind before initialising.
+    if (identical(get_os(), "linux")) {
+        julia_lib_dir <- dirname(.julia$dll_file)
+        libunwind_paths <- Sys.glob(file.path(julia_lib_dir, "julia", "libunwind.so*"))
+        if (length(libunwind_paths) > 0) {
+            if (verbose) message("Loading Julia libunwind from: ", libunwind_paths[1])
+            tryCatch({
+                dyn.load(libunwind_paths[1], local = FALSE, now = TRUE)
+            }, error = function(e) {
+                if (verbose) warning("Failed to load libunwind: ", e$message)
+            })
+        } else {
+            if (verbose) warning("Julia libunwind not found in ", file.path(julia_lib_dir, "julia"))
+        }
+    }
+
     ## seems okay to try to load libjulia earlier, except on osx
     if (!identical(get_os(), "osx")) {
         try(dyn.load(.julia$dll_file))
