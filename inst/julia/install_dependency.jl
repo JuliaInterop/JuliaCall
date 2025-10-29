@@ -32,11 +32,37 @@ function installed(name)
 end
 
 if installed("Suppressor") == nothing
-    Pkg.add("Suppressor")
+    # Use try-catch to handle potential package conflicts on ARM64
+    try
+        Pkg.add("Suppressor")
+    catch e
+        @warn "Failed to install Suppressor directly, trying to resolve in isolated environment" exception=e
+        # Create a temporary isolated environment to avoid conflicts
+        temp_env = mktempdir()
+        Pkg.activate(temp_env)
+        Pkg.add("Suppressor")
+        Pkg.activate() # Return to default environment
+        # Now try again in the main environment
+        Pkg.add("Suppressor")
+    end
 end;
 
 using Suppressor
 
 if installed("RCall") == nothing
-    Pkg.add("RCall")
+    # Use try-catch to handle potential package conflicts on ARM64
+    try
+        Pkg.add("RCall")
+    catch e
+        @warn "Failed to install RCall directly, trying to resolve in isolated environment" exception=e
+        # For RCall, we need to be more careful as it needs to be in the main environment
+        # Try to update registry first which often fixes ARM64 issues
+        try
+            Pkg.Registry.update()
+        catch
+            @warn "Could not update registry"
+        end
+        # Try again after registry update
+        Pkg.add("RCall")
+    end
 end;
