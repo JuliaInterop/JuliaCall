@@ -41,7 +41,7 @@ julia_setup <- function(JULIA_HOME = NULL, verbose = TRUE,
                         installJulia = FALSE,
                         install = TRUE, force = FALSE, useRCall = TRUE,
                         rebuild = FALSE, sysimage_path = NULL,
-                        version = "lts") {
+                        version = "latest") {
     ## libR <- paste0(R.home(), '/lib')
     ## system(paste0('export LD_LIBRARY_PATH=', libR, ':$LD_LIBRARY_PATH'))
 
