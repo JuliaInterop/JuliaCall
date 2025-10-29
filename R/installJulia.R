@@ -105,7 +105,7 @@ julia_save_install_dir <- function(dir){
 #'     if it is installed, otherwise an error will be raised.
 #'
 #' @export
-install_julia <- function(version = "lts",
+install_julia <- function(version = "latest",
                           prefix = julia_default_install_dir()){
     if (is.null(prefix)) {
         stop("rappdirs is not installed and prefix was not provided")
