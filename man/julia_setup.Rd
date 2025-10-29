@@ -44,8 +44,9 @@ If a new version of R is used, then this parameter needs to be set to TRUE.}
 \item{sysimage_path}{path to the precompiled custom sys image.
 Path can be either an absolute path or relative to the current directory.}
 
-\item{version}{the version of Julia to install. Defaults to "latest", which is the most recent 
-stable release, or specify a version like "1.10" or "lts" for the Long Term Support version.}
+\item{version}{the version of Julia to install. Defaults to "latest", which is the current
+latest version of Julia. You can also use "lts" for the most recent 
+long term stable release, or specify a version like "1.10".}
 }
 \value{
 The julia interface, which is an environment with the necessary methods

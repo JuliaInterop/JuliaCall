@@ -27,7 +27,7 @@ Imports: utils,
     Rcpp (>= 0.12.7),
     knitr (>= 1.28),
     rjson
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.3
 LinkingTo: Rcpp
 NeedsCompilation: yes
 ByteCompile: yes
