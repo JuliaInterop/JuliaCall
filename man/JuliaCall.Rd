@@ -2,6 +2,7 @@
 % Please edit documentation in R/JuliaCall.R
 \docType{package}
 \name{JuliaCall}
+\alias{JuliaCall-package}
 \alias{JuliaCall}
 \title{JuliaCall: Seamless Integration Between R and Julia.}
 \description{
@@ -54,6 +55,26 @@ if (identical(Sys.getenv("AUTO_JULIA_INSTALL"), "true")) { ## The examples are q
 
   # julia$library("Optim")
   julia_library("Optim")
+}
+
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/JuliaInterop/JuliaCall}
+  \item Report bugs at \url{https://github.com/JuliaInterop/JuliaCall/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Changcheng Li \email{cxl508@psu.edu}
+
+Other contributors:
+\itemize{
+  \item Christopher Rackauckas \email{accounts@chrisrackauckas.com} [contributor]
+  \item Randy Lai [contributor]
+  \item Dmitri Grominski [contributor]
+  \item Nagi Teramo [contributor]
 }
 
 }

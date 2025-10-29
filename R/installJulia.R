@@ -96,7 +96,7 @@ julia_save_install_dir <- function(dir){
 
 #' Install Julia.
 #'
-#' @param version The version of Julia to install (e.g. \code{"1.6.3"}).
+#' @param version The version of Julia to install (e.g. \code{"1.10.10"}).
 #'                Defaults to \code{"lts"}, which will install the current
 #'                Long Term Support release. Can also be \code{"latest"} for
 #'                the most recent stable release.
