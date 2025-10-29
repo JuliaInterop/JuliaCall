@@ -13,7 +13,7 @@ julia_setup(
   useRCall = TRUE,
   rebuild = FALSE,
   sysimage_path = NULL,
-  version = "lts"
+  version = "latest"
 )
 }
 \arguments{
