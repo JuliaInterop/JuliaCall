@@ -4,7 +4,7 @@
 \alias{install_julia}
 \title{Install Julia.}
 \usage{
-install_julia(version = "lts", prefix = julia_default_install_dir())
+install_julia(version = "latest", prefix = julia_default_install_dir())
 }
 \arguments{
 \item{version}{The version of Julia to install (e.g. \code{"1.6.3"}).
