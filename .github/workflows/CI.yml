@@ -35,7 +35,7 @@ jobs:
           version: '1.11'
 
       - name: Cache Julia packages
-        uses: julia-actions/cache@v2
+        uses: julia-actions/cache@v3
         with:
           cache-name: julia-cache-artifacts
           cache-compiled: true
