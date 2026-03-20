@@ -165,25 +165,20 @@ end
 const _interrupt_timer = Ref{Union{Timer, Nothing}}(nothing)
 const _main_task = Ref{Union{Task, Nothing}}(nothing)
 
-"""
-    r_interrupt_pending()::Bool
-
-Check whether R has a pending user interrupt (Ctrl+C / Stop button)
-by reading the R-internal flag directly via cglobal.
-Returns true if the flag is set. Does NOT reset the flag — we leave
-it set so R handles the interrupt natively when control returns.
-"""
-function r_interrupt_pending()
-    # We read R's interrupt-pending flag directly via cglobal, the same way
-    # RCall.jl does in its eventloop.jl:
-    # https://github.com/JuliaInterop/RCall.jl/blob/6c76130/src/eventloop.jl#L16-L23
-    # On Windows the flag is called UserBreak; on Unix R_interrupts_pending.
+function _r_interrupt_ptr()
     @static if Sys.iswindows()
-        ptr = cglobal((:UserBreak, RCall.libR), Cint)
+        cglobal((:UserBreak, RCall.libR), Cint)
     else
-        ptr = cglobal((:R_interrupts_pending, RCall.libR), Cint)
+        cglobal((:R_interrupts_pending, RCall.libR), Cint)
     end
-    return unsafe_load(ptr) != 0
+end
+
+function r_interrupt_pending()
+    return unsafe_load(_r_interrupt_ptr()) != 0
+end
+
+function clear_r_interrupt_pending()
+    unsafe_store!(_r_interrupt_ptr(), Cint(0))
 end
 
 function start_interrupt_monitor(; interval = 0.2)
@@ -238,9 +233,9 @@ function docall(call1)
         end;
     catch e
         if e isa InterruptException
-            # Return a harmless value on interrupt.
-            # R_interrupts_pending is still set, so R will handle the
-            # interrupt itself once control returns from .Call.
+            # Clear the flag so subsequent Julia calls are not
+            # immediately interrupted again.
+            clear_r_interrupt_pending()
             sexp(nothing);
         else
             Rerror(e, stacktrace(catch_backtrace())).p;

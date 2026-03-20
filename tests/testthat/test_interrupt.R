@@ -44,4 +44,17 @@ test_that("R interrupt flag aborts long-running Julia computation", {
   # check 3: the julia session is still alive
   expect_equal(julia_eval("1 + 1"), 2)
 
+  # check 4: docall's catch block cleared R_interrupts_pending
+  flag <- julia_eval("begin
+      ptr = @static if Sys.iswindows()
+          cglobal((:UserBreak, RCall.libR), Cint)
+      else
+          cglobal((:R_interrupts_pending, RCall.libR), Cint)
+      end
+      Int(unsafe_load(ptr))
+  end")
+  expect_equal(flag, 0L)
+
+  # Unconditionally clear the flag to avoid affecting any subsequent tests.
+  julia_command("unsafe_store!(ptr, Cint(0))")
 })
