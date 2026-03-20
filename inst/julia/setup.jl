@@ -162,7 +162,55 @@ function call_decompose(call1)
     (fname, named_args, unamed_args, need_return, show_value)
 end
 
+const _interrupt_timer = Ref{Union{Timer, Nothing}}(nothing)
+const _main_task = Ref{Union{Task, Nothing}}(nothing)
+
+"""
+    r_interrupt_pending()::Bool
+
+Check whether R has a pending user interrupt (Ctrl+C / Stop button)
+by reading the R-internal flag directly via cglobal.
+Returns true if the flag is set. Does NOT reset the flag — we leave
+it set so R handles the interrupt natively when control returns.
+"""
+function r_interrupt_pending()
+    # We read R's interrupt-pending flag directly via cglobal, the same way
+    # RCall.jl does in its eventloop.jl:
+    # https://github.com/JuliaInterop/RCall.jl/blob/6c76130/src/eventloop.jl#L16-L23
+    # On Windows the flag is called UserBreak; on Unix R_interrupts_pending.
+    @static if Sys.iswindows()
+        ptr = cglobal((:UserBreak, RCall.libR), Cint)
+    else
+        ptr = cglobal((:R_interrupts_pending, RCall.libR), Cint)
+    end
+    return unsafe_load(ptr) != 0
+end
+
+function start_interrupt_monitor(; interval = 0.2)
+    stop_interrupt_monitor()
+    _main_task[] = current_task()
+    maintask = _main_task[]
+    _interrupt_timer[] = Timer(0.0; interval = interval) do t
+        if r_interrupt_pending()
+            close(t)
+            # Throw the InterruptException into the main task so the
+            # actual computation (not just the timer) gets interrupted.
+            Base.throwto(maintask, InterruptException())
+        end
+    end
+end
+
+function stop_interrupt_monitor()
+    timer = _interrupt_timer[]
+    if timer !== nothing
+        close(timer)
+        _interrupt_timer[] = nothing
+    end
+    _main_task[] = nothing
+end
+
 function docall(call1)
+    start_interrupt_monitor()
     try
         fname, named_args, unamed_args, need_return, show_value = call_decompose(call1);
         if endswith(fname, ".")
@@ -189,7 +237,16 @@ function docall(call1)
             sexp(nothing);
         end;
     catch e
-        Rerror(e, stacktrace(catch_backtrace())).p;
+        if e isa InterruptException
+            # Return a harmless value on interrupt.
+            # R_interrupts_pending is still set, so R will handle the
+            # interrupt itself once control returns from .Call.
+            sexp(nothing);
+        else
+            Rerror(e, stacktrace(catch_backtrace())).p;
+        end;
+    finally
+        stop_interrupt_monitor()
     end;
 end
 
