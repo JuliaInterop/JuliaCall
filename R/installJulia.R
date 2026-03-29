@@ -15,33 +15,45 @@ julia_default_install_dir <- function(){
 #'
 #' @return A numeric_version object representing the latest stable Julia version.
 #' @export
+.latest_stable_julia_version_from_versions <- function(versions) {
+    stable_versions <- names(Filter(function(v) isTRUE(v$stable), versions))
+    stable_versions <- sub("^v", "", stable_versions)
+    if (length(stable_versions) == 0) {
+        stop("Could not determine latest stable Julia version.")
+    }
+    max(package_version(stable_versions))
+}
+
 julia_latest_version <- function(){
     url <- "https://julialang-s3.julialang.org/bin/versions.json"
     file <- tempfile()
     utils::download.file(url, file)
     versions <- rjson::fromJSON(file=file)
 
-    max(numeric_version(names(Filter(function(v) v$stable, versions))))
+    .latest_stable_julia_version_from_versions(versions)
 }
 
 #' Get the latest Long Term Support (LTS) Julia version.
 #'
 #' @return A numeric_version object representing the latest LTS Julia version.
 #' @export
+.latest_lts_julia_version_from_versions <- function(versions) {
+    lts_versions <- names(Filter(function(v) isTRUE(v$stable) && isTRUE(v$lts), versions))
+    lts_versions <- sub("^v", "", lts_versions)
+    if (length(lts_versions) > 0) {
+        max(package_version(lts_versions))
+    } else {
+        .latest_stable_julia_version_from_versions(versions)
+    }
+}
+
 julia_lts_version <- function(){
     url <- "https://julialang-s3.julialang.org/bin/versions.json"
     file <- tempfile()
     utils::download.file(url, file)
     versions <- rjson::fromJSON(file=file)
 
-    # Find the latest LTS version (currently 1.10.x series)
-    lts_versions <- names(Filter(function(v) v$stable && isTRUE(v$lts), versions))
-    if (length(lts_versions) > 0) {
-        max(numeric_version(lts_versions))
-    } else {
-        # Fallback to latest stable if no LTS is marked
-        julia_latest_version()
-    }
+    .latest_lts_julia_version_from_versions(versions)
 }
 
 
