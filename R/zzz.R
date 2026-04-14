@@ -170,7 +170,7 @@ julia_setup <- function(JULIA_HOME = NULL, verbose = TRUE,
 
     reg.finalizer(.julia,
                   function(e){
-                      message("Julia exit.");
+                      if (interactive()) message("Julia exit.");
                       juliacall_atexit_hook(0);
                       },
                   onexit = TRUE)
