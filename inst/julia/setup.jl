@@ -162,7 +162,50 @@ function call_decompose(call1)
     (fname, named_args, unamed_args, need_return, show_value)
 end
 
+const _interrupt_timer = Ref{Union{Timer, Nothing}}(nothing)
+const _main_task = Ref{Union{Task, Nothing}}(nothing)
+
+function _r_interrupt_ptr()
+    @static if Sys.iswindows()
+        cglobal((:UserBreak, RCall.libR), Cint)
+    else
+        cglobal((:R_interrupts_pending, RCall.libR), Cint)
+    end
+end
+
+function r_interrupt_pending()
+    return unsafe_load(_r_interrupt_ptr()) != 0
+end
+
+function clear_r_interrupt_pending()
+    unsafe_store!(_r_interrupt_ptr(), Cint(0))
+end
+
+function start_interrupt_monitor(; interval = 0.2)
+    stop_interrupt_monitor()
+    _main_task[] = current_task()
+    maintask = _main_task[]
+    _interrupt_timer[] = Timer(0.0; interval = interval) do t
+        if r_interrupt_pending()
+            close(t)
+            # Throw the InterruptException into the main task so the
+            # actual computation (not just the timer) gets interrupted.
+            Base.throwto(maintask, InterruptException())
+        end
+    end
+end
+
+function stop_interrupt_monitor()
+    timer = _interrupt_timer[]
+    if timer !== nothing
+        close(timer)
+        _interrupt_timer[] = nothing
+    end
+    _main_task[] = nothing
+end
+
 function docall(call1)
+    start_interrupt_monitor()
     try
         fname, named_args, unamed_args, need_return, show_value = call_decompose(call1);
         if endswith(fname, ".")
@@ -189,7 +232,16 @@ function docall(call1)
             sexp(nothing);
         end;
     catch e
-        Rerror(e, stacktrace(catch_backtrace())).p;
+        if e isa InterruptException
+            # Clear the flag so subsequent Julia calls are not
+            # immediately interrupted again.
+            clear_r_interrupt_pending()
+            sexp(nothing);
+        else
+            Rerror(e, stacktrace(catch_backtrace())).p;
+        end;
+    finally
+        stop_interrupt_monitor()
     end;
 end
 
