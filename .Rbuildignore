@@ -1,3 +1,5 @@
+^renv$
+^renv\.lock$
 ^\.github$
 ^CODE_OF_CONDUCT\.md$
 ^CRAN-RELEASE$
